@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-from src.models.homework import Homework
+from web_server.src.models.homework import Homework
 
 
 def get_homework_by_id(id: int) -> Tuple[int, Homework]:

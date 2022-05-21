@@ -2,7 +2,7 @@ import datetime
 
 from pydantic import BaseModel
 
-from src.models.submition_result import SubmitionResult
+from web_server.src.models.submition_result import SubmitionResult
 
 
 class Submition(BaseModel):

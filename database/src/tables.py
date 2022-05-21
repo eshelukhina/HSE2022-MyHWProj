@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, DateTime
 
-from src.db.database import Model
+from database.src.database import Model
+from web_server.src.models.submition_result import SubmitionResult
 
 
 class Homeworks(Model):
@@ -18,13 +19,5 @@ class Submition(Model):
 
     id = Column(Integer, primary_key=True, index=True)
     homework_id = Column(Integer)
-    result_id = Column(Integer)
     submition_time = Column(DateTime)
-
-
-class SubmitionResult(Model):
-    __tablename__ = "submition_result"
-
-    id = Column(Integer, primary_key=True, index=True)
-    accepted = Column(Boolean)
-    commentary = Column(String)
+    result = Column(SubmitionResult)

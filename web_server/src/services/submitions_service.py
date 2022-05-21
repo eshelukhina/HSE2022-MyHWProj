@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-from src.models.submition import Submition
+from web_server.src.models.submition import Submition
 
 
 def get_all_submitions() -> Tuple[int, List[Submition]]:

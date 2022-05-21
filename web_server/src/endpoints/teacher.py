@@ -2,8 +2,8 @@ from fastapi import APIRouter
 from fastapi.encoders import jsonable_encoder
 from starlette.responses import JSONResponse
 
-from src.models.homework import Homework
-from src.services import teacher_service
+from web_server.src.models.homework import Homework
+from web_server.src.services import teacher_service
 
 teacher_router = APIRouter(prefix="/teacher", tags=["Teacher"])
 
