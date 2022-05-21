@@ -10,8 +10,8 @@ from web_server.src.models.submition_result import SubmitionResult
 class Runner:
 
     def __init__(self) -> None:
-        ampq_host = "localhost" if os.environ.get("AMQP_HOST") is None else os.environ.get("AMQP_HOST")
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=ampq_host))
+        amqp_host = "localhost" if os.environ.get("AMQP_HOST") is None else os.environ.get("AMQP_HOST")
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=amqp_host))
         self.channel_to_consume = self.connection.channel()
         self.channel_to_produce = self.connection.channel()
         self.channel_to_consume.queue_declare(queue="tasks")

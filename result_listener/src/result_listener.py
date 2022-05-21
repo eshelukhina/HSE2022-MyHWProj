@@ -12,8 +12,8 @@ from web_server.src.models.submition import Submition
 class ResultListener:
 
     def __init__(self):
-        ampq_host = "localhost" if os.environ.get('AMQP_HOST') is None else os.environ.get('AMQP_HOST')
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=ampq_host))
+        amqp_host = "localhost" if os.environ.get('AMQP_HOST') is None else os.environ.get('AMQP_HOST')
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=amqp_host))
         self.channel = self.connection.channel()
         self.channel.queue_declare("results")
 

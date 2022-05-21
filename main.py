@@ -1,10 +1,11 @@
+import time
 from concurrent.futures import ProcessPoolExecutor
 
 import uvicorn
 from fastapi import FastAPI
 
-from database.src.database import Model
 from database.src.database import engine
+from database.src.tables import Model
 from result_listener.src.result_listener import ResultListener
 from runner.src.runner import Runner
 from web_server.src.endpoints.homeworks import homework_router
@@ -31,6 +32,7 @@ def run_result_listener():
 
 
 if __name__ == "__main__":
+    time.sleep(30)
     num_of_runners = 2
 
     with ProcessPoolExecutor(max_workers=num_of_runners + 1) as executor:
