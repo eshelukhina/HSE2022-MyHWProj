@@ -9,7 +9,7 @@ from database.src.database import Database
 from web_server.src.services import homeworks_service, submitions_service
 
 homework_router = APIRouter(prefix="/homeworks", tags=["Homeworks"])
-templates = Jinja2Templates(directory="../../../templates")
+templates = Jinja2Templates(directory="../../../../interface")
 
 
 @homework_router.get('/', response_class=HTMLResponse)
