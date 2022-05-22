@@ -1,4 +1,5 @@
 import os
+from typing import Union
 
 import pika
 from fastapi import Depends
@@ -25,7 +26,7 @@ class ResultListener:
             try:
                 self.channel.basic_consume("results", callback, True)
                 self.channel.start_consuming()
-            except (ConnectionClosedByBroker | AMQPChannelError | KeyboardInterrupt):
+            except (Union[ConnectionClosedByBroker, AMQPChannelError, KeyboardInterrupt]):
                 break
             except AMQPConnectionError:
                 continue

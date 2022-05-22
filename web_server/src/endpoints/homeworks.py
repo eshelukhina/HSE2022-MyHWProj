@@ -1,19 +1,21 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
+from requests import Session
 from starlette.responses import JSONResponse
 
+from database.src.database import Database
 from web_server.src.services import homeworks_service, submitions_service
 
 homework_router = APIRouter(prefix="/homeworks", tags=["Homeworks"])
 
 
 @homework_router.get('/')
-def get_all_homeworks():
-    status_code, content = homeworks_service.get_all_homeworks()
+def get_all_homeworks(db: Session = Depends(Database.get_db)):
+    status_code, content = homeworks_service.get_all_homeworks(db)
     return JSONResponse(status_code=status_code, content=jsonable_encoder(content))
 
 
 @homework_router.get('/{id}/submitions')
-def get_all_submitions_by_homework_id(id: int):
-    status_code, content = submitions_service.get_all_submitions_by_homework_id(id)
+def get_all_submitions_by_homework_id(id: int, db: Session = Depends(Database.get_db)):
+    status_code, content = submitions_service.get_all_submitions_by_homework_id(id, db)
     return JSONResponse(status_code=status_code, content=jsonable_encoder(content))
