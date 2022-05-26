@@ -1,0 +1,5 @@
+{% for hw in homeworks %}
+<div>
+    <input type="button" value={{hw.name}} onclick="window.location.href = '/student/homeworks/{{hw.id}}'">
+</div>
+{% endfor %}

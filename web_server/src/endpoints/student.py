@@ -1,21 +1,54 @@
-from fastapi import APIRouter, Depends
-from fastapi.encoders import jsonable_encoder
+import http
+
+import fastapi
+import starlette.status
+from fastapi import APIRouter, Depends, Request
 from requests import Session
 from starlette.responses import JSONResponse
+from starlette.templating import Jinja2Templates
 
 from database.src.database import Database
+from database.src.tables import Homework
+from web_server.src.models.submition import Submition
 from web_server.src.services import homeworks_service, submitions_service
 
 student_router = APIRouter(prefix="/student", tags=["Student"])
 
+templates = Jinja2Templates(directory="interface")
+
+
+@student_router.get('/')
+async def student_page(request: Request):
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request, "title": "Страница студента", "body": "student_page"}
+    )
+
 
 @student_router.get('/homeworks/{id}')
-def get_student_homework_by_id(id: int, db: Session = Depends(Database.get_db)):
+def get_student_homework_by_id(request: Request, id: int, db: Session = Depends(Database.get_db)):
     status_code, content = homeworks_service.get_homework_by_id(id, db)
-    return JSONResponse(status_code=status_code, content=jsonable_encoder(content))
+    if status_code != http.HTTPStatus.OK or type(content) != Homework:
+        return JSONResponse(status_code=status_code, content=content)
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request, "title": f"Страница домашнего задания: {content.name}", "body": "homework", "hw": content}
+    )
+
+
+def check_url(url: str, prefix: str):
+    if not url.startswith(prefix):
+        return False
+    rep = url.replace(prefix, "", 1)
+    splitted_url = rep.split("/")
+    return len(splitted_url) == 2
 
 
 @student_router.post('/homeworks/{id}')
-def add_homework_solution(id: int, db: Session = Depends(Database.get_db)):
-    status_code, content = submitions_service.add_homework_solution(id, db)
-    return JSONResponse(status_code=status_code, content=jsonable_encoder(content))
+async def add_homework_solution(id: int, submition: Submition, db: Session = Depends(Database.get_db)):
+    if not check_url(submition.url, "https://github.com/"):
+        return JSONResponse("Incorrect url", status_code=http.HTTPStatus.BAD_REQUEST)
+    status_code, content = submitions_service.add_homework_solution(id, submition, db)
+    if status_code != http.HTTPStatus.OK:
+        return JSONResponse(status_code=status_code, content=content)
+    return fastapi.responses.RedirectResponse("/submitions", status_code=starlette.status.HTTP_302_FOUND)

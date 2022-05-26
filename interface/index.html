@@ -1,12 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Number: {{ id }}</title>
+    <title>{{title}}</title>
 </head>
 <body>
-    <h2>Book Number: {{ id }}</h2>
+{% block content %}
+    {% if body == 'root' %}
+        {% include 'root.html' %}
+    {% endif %}
+    {% if body == 'student_page' %}
+        {% include 'student_page.html' %}
+    {% endif %}
+    {% if body == 'homeworks' %}
+        {% include 'homeworks.html' %}
+    {% endif %}
+    {% if body == 'homework' %}
+        {% include 'homework.html' %}
+    {% endif %}
+{% endblock %}
 </body>
 </html>

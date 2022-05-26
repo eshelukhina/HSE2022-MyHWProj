@@ -2,7 +2,8 @@ import time
 from concurrent.futures import ProcessPoolExecutor
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from starlette.templating import Jinja2Templates
 
 from database.src.database import engine
 from database.src.tables import Model
@@ -29,6 +30,14 @@ def run_runner():
 
 def run_result_listener():
     ResultListener().run()
+
+
+templates = Jinja2Templates(directory="interface")
+
+
+@app.get('/')
+async def root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request, "title": "Начальная страница", "body": "root"})
 
 
 if __name__ == "__main__":

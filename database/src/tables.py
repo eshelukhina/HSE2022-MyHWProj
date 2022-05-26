@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from database.src.database import Model
 
 
-class Homeworks(Model):
+class Homework(Model):
     __tablename__ = "homeworks"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -19,6 +19,7 @@ class Submition(Model):
     id = Column(Integer, primary_key=True, index=True)
     homework_id = Column(Integer)
     result_id = Column(Integer)
+    url = Column(String)
     submition_time = Column(DateTime)
 
 

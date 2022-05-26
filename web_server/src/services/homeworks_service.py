@@ -14,5 +14,5 @@ def get_homework_by_id(id: int, db: Session) -> Tuple[int, Any]:
     return http.HTTPStatus.OK, homework
 
 
-def get_all_homeworks(db : Session) -> Tuple[int, List[Homework]]:
+def get_all_homeworks(db: Session) -> Tuple[int, List[Homework]]:
     return http.HTTPStatus.OK, crud.get_all_homeworks(db)
