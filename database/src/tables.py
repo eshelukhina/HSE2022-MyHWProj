@@ -14,7 +14,7 @@ class Homework(Model):
 
 
 class Submition(Model):
-    __tablename__ = "submition"
+    __tablename__ = "submitions"
 
     id = Column(Integer, primary_key=True, index=True)
     homework_id = Column(Integer)
@@ -24,7 +24,7 @@ class Submition(Model):
 
 
 class SubmitionResult(Model):
-    __tablename__ = "submition_result"
+    __tablename__ = "submition_results"
 
     id = Column(Integer, primary_key=True, index=True)
     accepted = Column(Boolean)

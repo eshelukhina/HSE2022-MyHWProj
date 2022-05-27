@@ -1,0 +1,52 @@
+<script>
+    function sendJSON() {
+        let url_to_sending = "http://localhost:8000/teacher/homeworks";
+        let name = document.querySelector('#name');
+        let description = document.querySelector('#description');
+        let publish_time = document.querySelector('#publish_time');
+        let deadline = document.querySelector('#deadline');
+        let xhr = new XMLHttpRequest();
+
+        xhr.open("POST", url_to_sending, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        let data = JSON.stringify({
+            "id": 0,
+            "name": name.value,
+            "description": description.value,
+            "publish_time": publish_time.value,
+            "deadline": deadline.value
+        });
+        xhr.onreadystatechange = function () {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                window.location.href = this.responseURL
+            }
+        }
+        xhr.send(data);
+    }
+</script>
+
+<div>
+    <input type="button" value="Просмотреть список домашних работ" onclick="window.location.href = '/homeworks'">
+</div>
+<div class="form-example">
+    <label for="name">Название: </label>
+    <input type="text" name="name" id="name">
+</div>
+<div class="form-example">
+    <label for="description">Описание: </label>
+    <input type="text" name="description" id="description">
+</div>
+<div class="form-example">
+    <label for="publish_time">Время публикации: </label>
+    <input type="datetime-local" name="publish_time" id="publish_time">
+</div>
+<div class="form-example">
+    <label for="deadline">Дедлайн: </label>
+    <input type="datetime-local" name="deadline" id="deadline">
+</div>
+<div>
+    <input type="button" value="Добавить новую домашнюю работу" onclick=sendJSON()>
+</div>
+<div>
+    <input type="button" value="Просмотреть список результатов" onclick="window.location.href = '/submitions'">
+</div>

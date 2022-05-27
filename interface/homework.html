@@ -1,7 +1,33 @@
 <script>
+    function isValidHttpUrl(string) {
+        let url;
+
+        try {
+            url = new URL(string);
+        } catch (_) {
+            return false;
+        }
+
+        if (!url.toString().startsWith("https://github.com/")) {
+            return false;
+        }
+
+        let changedUrl = url.toString().replace("https://github.com/", "");
+        if (changedUrl.endsWith("/")) {
+            changedUrl = changedUrl.substring(0, changedUrl.length - 1)
+        }
+
+        let splittedUrl = changedUrl.split("/")
+        return splittedUrl.length === 2;
+    }
+
     function sendJSON() {
         let url_to_sending = document.URL;
         let url = document.querySelector('#url');
+        if (!isValidHttpUrl(url.value)) {
+            alert("Incorrect url");
+            return;
+        }
         let xhr = new XMLHttpRequest();
 
         xhr.open("POST", url_to_sending, true);
@@ -13,6 +39,11 @@
             "url": url.value,
             "submition_time": new Date()
         });
+        xhr.onreadystatechange = function () {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                window.location.href = this.responseURL
+            }
+        }
         xhr.send(data);
     }
 </script>

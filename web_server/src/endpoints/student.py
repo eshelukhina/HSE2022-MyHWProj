@@ -26,7 +26,7 @@ async def student_page(request: Request):
 
 
 @student_router.get('/homeworks/{id}')
-def get_student_homework_by_id(request: Request, id: int, db: Session = Depends(Database.get_db)):
+async def get_student_homework_by_id(request: Request, id: int, db: Session = Depends(Database.get_db)):
     status_code, content = homeworks_service.get_homework_by_id(id, db)
     if status_code != http.HTTPStatus.OK or type(content) != Homework:
         return JSONResponse(status_code=status_code, content=content)
@@ -39,7 +39,7 @@ def get_student_homework_by_id(request: Request, id: int, db: Session = Depends(
 def check_url(url: str, prefix: str):
     if not url.startswith(prefix):
         return False
-    rep = url.replace(prefix, "", 1)
+    rep = url.replace(prefix, "", 1).strip("/")
     splitted_url = rep.split("/")
     return len(splitted_url) == 2
 
