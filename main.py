@@ -41,7 +41,7 @@ async def root(request: Request):
 
 
 if __name__ == "__main__":
-    # time.sleep(30)
+    time.sleep(30)
     num_of_runners = 2
 
     with ProcessPoolExecutor(max_workers=num_of_runners + 1) as executor:
