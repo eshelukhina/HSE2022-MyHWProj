@@ -1,10 +1,11 @@
+import json
 import os
 
 import pika
 from pika.exceptions import ConnectionClosedByBroker, AMQPChannelError
 
-from web_server.src.models.submition import Submition
-from web_server.src.models.submition_result import SubmitionResult
+from runner.src.checker import CheckerInfo, Checker, checker_dict
+from web_server.src.models.submission_result import SubmissionResult
 
 
 class Runner:
@@ -19,7 +20,14 @@ class Runner:
 
     def run(self):
         def callback(ch, method, properties, body):
-            self.channel_to_produce.basic_publish(exchange="", routing_key="results", body=body)
+            info: CheckerInfo = CheckerInfo(**json.loads(body))
+            checker: Checker = checker_dict[info.homework_checker]
+            result: SubmissionResult = checker.check(info)
+            self.channel_to_produce.basic_publish(
+                exchange="",
+                routing_key="results",
+                body=result.json().encode("utf-8")
+            )
 
         self.channel_to_consume.basic_consume("tasks", callback, True)
 
@@ -28,9 +36,3 @@ class Runner:
                 self.channel_to_consume.start_consuming()
             except (ConnectionClosedByBroker | AMQPChannelError | KeyboardInterrupt):
                 break
-
-    def __check_submition__(self, submition: Submition) -> SubmitionResult:
-        pass
-
-    def add_result_to_queue(self, submition: Submition) -> None:
-        pass

@@ -1,0 +1,5 @@
+{% for submission in submissions %}
+<div>
+    <input type="button" value="Submission: {{submission.id}}" onclick="window.location.href = '/submissions/{{submission.id}}'">
+</div>
+{% endfor %}

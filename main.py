@@ -11,7 +11,7 @@ from result_listener.src.result_listener import ResultListener
 from runner.src.runner import Runner
 from web_server.src.endpoints.homeworks import homework_router
 from web_server.src.endpoints.student import student_router
-from web_server.src.endpoints.submitions import submitions_router
+from web_server.src.endpoints.submissions import submissions_router
 from web_server.src.endpoints.teacher import teacher_router
 
 Model.metadata.create_all(bind=engine)
@@ -21,7 +21,7 @@ app = FastAPI()
 app.include_router(homework_router)
 app.include_router(student_router)
 app.include_router(teacher_router)
-app.include_router(submitions_router)
+app.include_router(submissions_router)
 
 
 def run_runner():
@@ -41,7 +41,7 @@ async def root(request: Request):
 
 
 if __name__ == "__main__":
-    time.sleep(30)
+    # time.sleep(30)
     num_of_runners = 2
 
     with ProcessPoolExecutor(max_workers=num_of_runners + 1) as executor:

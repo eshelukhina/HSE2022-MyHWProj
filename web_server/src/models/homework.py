@@ -9,3 +9,4 @@ class Homework(BaseModel):
     description: str
     publish_time: datetime.datetime
     deadline: datetime.datetime
+    checker: str

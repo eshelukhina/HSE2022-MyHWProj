@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class SubmitionResult(BaseModel):
-    id: int
+class SubmissionResult(BaseModel):
+    submission_id: int
     accepted: bool
     commentary: str

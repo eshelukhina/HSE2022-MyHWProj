@@ -11,21 +11,21 @@ class Homework(Model):
     description = Column(String)
     publish_time = Column(DateTime)
     deadline = Column(DateTime)
+    checker = Column(String)
 
 
-class Submition(Model):
-    __tablename__ = "submitions"
+class Submission(Model):
+    __tablename__ = "submissions"
 
     id = Column(Integer, primary_key=True, index=True)
     homework_id = Column(Integer)
-    result_id = Column(Integer)
     url = Column(String)
-    submition_time = Column(DateTime)
+    submission_time = Column(DateTime)
 
 
-class SubmitionResult(Model):
-    __tablename__ = "submition_results"
+class SubmissionResult(Model):
+    __tablename__ = "submission_results"
 
-    id = Column(Integer, primary_key=True, index=True)
+    submission_id = Column(Integer, primary_key=True, index=True)
     accepted = Column(Boolean)
     commentary = Column(String)

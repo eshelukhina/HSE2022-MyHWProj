@@ -9,8 +9,8 @@ from starlette.templating import Jinja2Templates
 
 from database.src.database import Database
 from database.src.tables import Homework
-from web_server.src.models.submition import Submition
-from web_server.src.services import homeworks_service, submitions_service
+from web_server.src.models.submission import Submission
+from web_server.src.services import homeworks_service, submissions_service
 
 student_router = APIRouter(prefix="/student", tags=["Student"])
 
@@ -45,10 +45,10 @@ def check_url(url: str, prefix: str):
 
 
 @student_router.post('/homeworks/{id}')
-async def add_homework_solution(id: int, submition: Submition, db: Session = Depends(Database.get_db)):
-    if not check_url(submition.url, "https://github.com/"):
+async def add_homework_solution(id: int, submission: Submission, db: Session = Depends(Database.get_db)):
+    if not check_url(submission.url, "https://github.com/"):
         return JSONResponse("Incorrect url", status_code=http.HTTPStatus.BAD_REQUEST)
-    status_code, content = submitions_service.add_homework_solution(id, submition, db)
+    status_code, content = submissions_service.add_homework_solution(id, submission, db)
     if status_code != http.HTTPStatus.OK:
         return JSONResponse(status_code=status_code, content=content)
-    return fastapi.responses.RedirectResponse("/submitions", status_code=starlette.status.HTTP_302_FOUND)
+    return fastapi.responses.RedirectResponse("/submissions", status_code=starlette.status.HTTP_302_FOUND)

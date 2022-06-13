@@ -1,13 +1,13 @@
+import json
 import os
-from typing import Union
 
 import pika
-from fastapi import Depends
 from pika.exceptions import ConnectionClosedByBroker, AMQPConnectionError, AMQPChannelError
 from sqlalchemy.orm import Session
 
-from database.src.database import Database
-from web_server.src.models.submition import Submition
+from database.src import crud
+from database.src.database import engine
+from web_server.src.models.submission_result import SubmissionResult
 
 
 class ResultListener:
@@ -17,19 +17,18 @@ class ResultListener:
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=amqp_host))
         self.channel = self.connection.channel()
         self.channel.queue_declare("results")
+        self.session = Session(engine)
 
     def run(self) -> None:
         def callback(ch, method, properties, body):
-            pass
+            result: SubmissionResult = SubmissionResult(**json.loads(body))
+            crud.create_submission_result(result, self.session)
+
+        self.channel.basic_consume("results", callback, True)
 
         while True:
             try:
-                self.channel.basic_consume("results", callback, True)
                 self.channel.start_consuming()
-            except (Union[ConnectionClosedByBroker, AMQPChannelError, KeyboardInterrupt]):
+            except (ConnectionClosedByBroker | AMQPChannelError | KeyboardInterrupt | AMQPConnectionError):
+                self.session
                 break
-            except AMQPConnectionError:
-                continue
-
-    def accept(self, submition: Submition, db: Session = Depends(Database.get_db)):
-        pass
