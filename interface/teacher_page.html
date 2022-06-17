@@ -1,6 +1,6 @@
 <script>
     function sendJSON() {
-        let url_to_sending = "http://localhost:8000/teacher/homeworks";
+        let url_to_sending = document.URL + "homeworks";
         let name = document.querySelector('#name');
         let description = document.querySelector('#description');
         let publish_time = document.querySelector('#publish_time');
@@ -21,6 +21,9 @@
         xhr.onreadystatechange = function () {
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
                 window.location.href = this.responseURL
+            } else if (this.readyState === XMLHttpRequest.DONE) {
+                document.title = "Ошибка " + this.status
+                document.write(this.responseText)
             }
         }
         xhr.send(data);

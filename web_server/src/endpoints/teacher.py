@@ -9,7 +9,7 @@ from starlette.templating import Jinja2Templates
 
 from database.src.database import Database
 from web_server.src.models.homework import Homework
-from web_server.src.services import teacher_service
+from web_server.src.services.teacher_service import TeacherService
 
 teacher_router = APIRouter(prefix="/teacher", tags=["Teacher"])
 
@@ -26,7 +26,7 @@ async def teacher_page(request: Request):
 
 @teacher_router.post('/homeworks')
 def add_homework(homework: Homework, db: Session = Depends(Database.get_db)):
-    status_code, content = teacher_service.add_homework(homework, db)
+    status_code, content = TeacherService.add_homework(homework, db)
     if status_code != http.HTTPStatus.OK:
         return JSONResponse(status_code=status_code, content=content)
     return fastapi.responses.RedirectResponse("/homeworks", status_code=starlette.status.HTTP_302_FOUND)
