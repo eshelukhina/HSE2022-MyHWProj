@@ -13,7 +13,7 @@ class SubmissionRepository:
         submission_to_db = tables.Submission(
             homework_id=submission.homework_id,
             url=submission.url,
-            submission_time=datetime.utcnow()
+            submission_time=datetime.now()
         )
         db.add(submission_to_db)
         db.commit()

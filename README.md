@@ -10,3 +10,6 @@ docker compose build && docker compose up -d
 ```
 http://localhost:8000/
 ```
+
+## Добавление раннеров
+Для добавления раннеров необходимо в файле `config.py` изменить значение `num_of_runners` 

@@ -45,6 +45,7 @@
             } else if (this.readyState === XMLHttpRequest.DONE) {
                 document.title = "Ошибка " + this.status
                 document.write(this.responseText)
+            }
         }
         xhr.send(data);
     }

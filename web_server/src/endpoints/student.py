@@ -1,4 +1,4 @@
-import http
+from http import HTTPStatus
 
 import fastapi
 import starlette.status
@@ -8,7 +8,6 @@ from starlette.responses import JSONResponse
 from starlette.templating import Jinja2Templates
 
 from database.src.database import Database
-from database.src.tables import Homework
 from web_server.src.models.submission import Submission
 from web_server.src.services.homeworks_service import HomeworkService
 from web_server.src.services.submissions_service import SubmissionService
@@ -26,14 +25,18 @@ async def student_page(request: Request):
     )
 
 
-@student_router.get('/homeworks/{id}')
-async def get_student_homework_by_id(request: Request, id: int, db: Session = Depends(Database.get_db)):
-    status_code, content = HomeworkService.get_homework_by_id(id, db)
-    if status_code != http.HTTPStatus.OK or type(content) != Homework:
-        return JSONResponse(status_code=status_code, content=content)
+@student_router.get('/homeworks/{hw_id}')
+async def get_student_homework_by_id(request: Request, hw_id: int, db: Session = Depends(Database.get_db)):
+    homework = HomeworkService.get_homework_by_id(hw_id, db)
+    if homework is None:
+        return JSONResponse(
+            status_code=HTTPStatus.NOT_FOUND,
+            content=f"No homework with id: {hw_id}"
+        )
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "title": f"Страница домашнего задания: {content.name}", "body": "homework", "hw": content}
+        {"request": request, "title": f"Страница домашнего задания: {homework.name}", "body": "homework",
+         "hw": homework}
     )
 
 
@@ -45,11 +48,12 @@ def check_url(url: str, prefix: str):
     return len(splitted_url) == 2
 
 
-@student_router.post('/homeworks/{id}')
-async def add_homework_solution(id: int, submission: Submission, db: Session = Depends(Database.get_db)):
+@student_router.post('/homeworks/{hw_id}')
+async def add_homework_solution(hw_id: int, submission: Submission, db: Session = Depends(Database.get_db)):
     if not check_url(submission.url, "https://github.com/"):
-        return JSONResponse("Incorrect url", status_code=http.HTTPStatus.BAD_REQUEST)
-    status_code, content = SubmissionService.add_submission(id, submission, db)
-    if status_code != http.HTTPStatus.OK:
-        return JSONResponse(status_code=status_code, content=content)
+        return JSONResponse("Incorrect url", status_code=HTTPStatus.BAD_REQUEST)
+    homework = HomeworkService.get_homework_by_id(hw_id, db)
+    if homework is None:
+        return JSONResponse(status_code=HTTPStatus.NOT_FOUND, content=f"homework with id {hw_id} is not found")
+    SubmissionService.add_submission(homework, submission, db)
     return fastapi.responses.RedirectResponse("/submissions", status_code=starlette.status.HTTP_302_FOUND)

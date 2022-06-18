@@ -5,9 +5,9 @@ import uvicorn
 from fastapi import FastAPI, Request
 from starlette.templating import Jinja2Templates
 
+from config import num_of_runners
 from database.src.database import engine
 from database.src.tables import Model
-from result_listener.src.result_listener import ResultListener
 from runner.src.runner import Runner
 from web_server.src.endpoints.homeworks import homework_router
 from web_server.src.endpoints.student import student_router
@@ -28,10 +28,6 @@ def run_runner():
     Runner().run()
 
 
-def run_result_listener():
-    ResultListener().run()
-
-
 templates = Jinja2Templates(directory="interface")
 
 
@@ -41,13 +37,8 @@ async def root(request: Request):
 
 
 if __name__ == "__main__":
-    # time.sleep(30)
-    num_of_runners = 2
-
+    time.sleep(30)
     with ProcessPoolExecutor(max_workers=num_of_runners + 1) as executor:
         for i in range(num_of_runners):
             executor.submit(run_runner)
-
-        executor.submit(run_result_listener)
-
         uvicorn.run("main:app", port=8000, host="0.0.0.0", reload=False)
