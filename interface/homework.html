@@ -1,0 +1,63 @@
+<script>
+    function isValidHttpUrl(string) {
+        let url;
+
+        try {
+            url = new URL(string);
+        } catch (_) {
+            return false;
+        }
+
+        if (!url.toString().startsWith("https://github.com/")) {
+            return false;
+        }
+
+        let changedUrl = url.toString().replace("https://github.com/", "");
+        if (changedUrl.endsWith("/")) {
+            changedUrl = changedUrl.substring(0, changedUrl.length - 1)
+        }
+
+        let splittedUrl = changedUrl.split("/")
+        return splittedUrl.length === 2;
+    }
+
+    function sendJSON() {
+        let url_to_sending = document.URL;
+        let url = document.querySelector('#url');
+        if (!isValidHttpUrl(url.value)) {
+            alert("Incorrect url");
+            return;
+        }
+        let xhr = new XMLHttpRequest();
+
+        xhr.open("POST", url_to_sending, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        let data = JSON.stringify({
+            "id": 0,
+            "homework_id": 0,
+            "result_id": 0,
+            "url": url.value,
+            "submission_time": new Date()
+        });
+        xhr.onreadystatechange = function () {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                window.location.href = this.responseURL
+            } else if (this.readyState === XMLHttpRequest.DONE) {
+                document.title = "Ошибка " + this.status
+                document.write(this.responseText)
+            }
+        }
+        xhr.send(data);
+    }
+</script>
+
+<h1>Название: {{hw.name}}</h1>
+<h3>Описание: {{hw.description}}</h3>
+<h3>Дата публикации: {{hw.publish_time}}</h3>
+<h3>Дедлайн: {{hw.deadline}}</h3>
+
+<div class="form-example">
+    <label for="url">Введите ссылку на репозиторий на GitHub: </label>
+    <input type="url" name="url" id="url">
+</div>
+<input type="submit" value="Отправить" onclick="sendJSON()">

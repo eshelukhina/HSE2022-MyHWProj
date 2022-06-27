@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+</head>
+<body>
+{% block content %}
+    {% if body == 'root' %}
+        {% include 'root.html' %}
+    {% endif %}
+    {% if body == 'student_page' %}
+        {% include 'student_page.html' %}
+    {% endif %}
+    {% if body == 'homeworks' %}
+        {% include 'homeworks.html' %}
+    {% endif %}
+    {% if body == 'homework' %}
+        {% include 'homework.html' %}
+    {% endif %}
+    {% if body == 'submission' %}
+        {% include 'submission.html' %}
+    {% endif %}
+    {% if body == 'submissions' %}
+        {% include 'submissions.html' %}
+    {% endif %}
+    {% if body == 'teacher_page' %}
+        {% include 'teacher_page.html' %}
+    {% endif %}
+{% endblock %}
+</body>
+</html>
